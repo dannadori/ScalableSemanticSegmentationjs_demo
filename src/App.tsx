@@ -16,7 +16,6 @@ interface AppState{
   initialized: boolean,
 }
 
-
 class App extends React.Component {
   state: AppState = {
       count: 0,
@@ -29,20 +28,14 @@ class App extends React.Component {
       initialized: false,
   }
 
-
   ////////////////////
   // HTML Component //
   ////////////////////
   parentRef = React.createRef<HTMLDivElement>()
-  imageRef1 = React.createRef<HTMLImageElement>()
-  imageRef2 = React.createRef<HTMLImageElement>()
   videoRef  = React.createRef<HTMLVideoElement>()
-  barcodeDisplayCanvasRef = React.createRef<HTMLCanvasElement>()
   controllerCanvasRef = React.createRef<HTMLCanvasElement>()
-  statusCanvasRef     = React.createRef<HTMLCanvasElement>()
   controllerDivRef = React.createRef<HTMLDivElement>()
   workerSSMaskMonitorCanvasRef = React.createRef<HTMLCanvasElement>()
-  workerAreaCVCanvasRef        = React.createRef<HTMLCanvasElement>()
   ////////////////////
   // Component Size //
   ////////////////////
@@ -56,29 +49,7 @@ class App extends React.Component {
   overlayXOffset = 0
   overlayYOffset = 0
 
-
-
-
   scalableSS:ScalableSemanticSegmentation = new ScalableSemanticSegmentation()
-
-  private video_img:ImageData|null = null
-  private working_video_img:ImageData|null = null
-  /**
-     * FPS測定用
-     */
-  frame = 0
-  fps   = 0.0
-  frameCountStartTime = new Date().getTime()
-  gameLoop() {
-      this.frame++
-      const thisTime = new Date().getTime()
-      if (thisTime - this.frameCountStartTime > 1000) {
-          const fps = (this.frame / (thisTime - this.frameCountStartTime)) * 1000
-          this.frameCountStartTime = new Date().getTime()
-          this.frame = 0
-          this.fps = fps
-      }
-  }
 
   /**
    * ワーカーの初期化
@@ -91,9 +62,6 @@ class App extends React.Component {
           this.requestScanBarcode()
       })
       this.scalableSS.addMaskPredictedListeners((maskBitmap:ImageBitmap)=>{
-          // console.log("MASK PREDICTED")
-          this.working_video_img = this.video_img //再キャプチャの前に処理中のimageをバックアップ
-
           // 再キャプチャ
           this.requestScanBarcode()
 
@@ -125,8 +93,6 @@ class App extends React.Component {
       this.overlayYOffset = overlayYOffset
 
 
-      this.workerAreaCVCanvasRef.current!.width  = this.overlayWidth
-      this.workerAreaCVCanvasRef.current!.height = this.overlayHeight
       this.workerSSMaskMonitorCanvasRef.current!.width  = this.overlayWidth
       this.workerSSMaskMonitorCanvasRef.current!.height = this.overlayHeight
       this.controllerCanvasRef.current!.width  = this.overlayWidth
@@ -197,7 +163,6 @@ class App extends React.Component {
                   console.error(error);
               });
       }           
-
   }
 
 
@@ -215,9 +180,7 @@ class App extends React.Component {
           return
       }
       this.scalableSS.predict(captureCanvas, this.state.colnum, this.state.rownum, AIConfig.SPLIT_MARGIN)
-      this.video_img = captureCanvas.getContext("2d")!.getImageData(0, 0, captureCanvas.width, captureCanvas.height)
       captureCanvas.remove()
-
   }
 
 
@@ -245,8 +208,6 @@ class App extends React.Component {
 
       return (
           <div style={{ width: "100%", height: this.parentHeight, position: "relative", top: 0, left: 0, }} ref={this.parentRef} >
-              {/* <img src="imgs/barcode01.png" alt="barcode" ref={this.imageRef1} />
-              <img src="imgs/barcode02.png" alt="barcode" ref={this.imageRef2} /> */}
               <video
                   autoPlay
                   playsInline
@@ -261,21 +222,7 @@ class App extends React.Component {
                   style={{ position: "absolute", top: this.overlayYOffset, left: this.overlayXOffset, width:this.parentWidth, height:this.parentHeight}}
               />
               <canvas
-                  ref = {this.workerAreaCVCanvasRef}
-                  style={{ position: "absolute", top: this.overlayYOffset, left: this.overlayXOffset, width:this.parentWidth, height:this.parentHeight}}
-              />
-              <canvas
-                  ref={this.barcodeDisplayCanvasRef}
-                  style={{ position: "absolute", top: this.overlayYOffset, left: this.overlayXOffset, width:this.parentWidth, height:this.parentHeight}}
-              />
-
-              <canvas
                   ref={this.controllerCanvasRef}
-                  style={{ position: "absolute", top: this.overlayYOffset, left: this.overlayXOffset, width:this.parentWidth, height:this.parentHeight}}
-              />
-
-              <canvas
-                  ref={this.statusCanvasRef}
                   style={{ position: "absolute", top: this.overlayYOffset, left: this.overlayXOffset, width:this.parentWidth, height:this.parentHeight}}
               />
 
@@ -295,15 +242,11 @@ class App extends React.Component {
                   }}/>
                   <Label basic size="tiny" color={this.state.showSS?"red":"grey"} onClick={()=>{
                       const newValue = !this.state.showSS
-                      // this.workerSSMaskMonitorCanvasRef.current!.width  = this.overlayWidth
-                      // this.workerSSMaskMonitorCanvasRef.current!.height = this.overlayHeight
                       this.scalableSS.previewCanvas = newValue ? this.workerSSMaskMonitorCanvasRef.current! : null
                       this.setState({showSS:newValue})
                   }}>ss</Label>
                   <Label basic size="tiny" color={this.state.showGrid?"red":"grey"} onClick={()=>{
                       const newValue = !this.state.showGrid
-                      // this.controllerCanvasRef.current!.width  = this.overlayWidth
-                      // this.controllerCanvasRef.current!.height = this.overlayHeight
                       this.scalableSS.girdDrawCanvas = newValue ? this.controllerCanvasRef.current! : null
                       this.setState({showGrid:!this.state.showGrid})
                   }}>grid</Label>
