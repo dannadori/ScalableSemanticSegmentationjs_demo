@@ -179,7 +179,7 @@ class App extends React.Component {
           window.requestAnimationFrame(this.requestScanBarcode);
           return
       }
-      this.scalableSS.predict(captureCanvas, this.state.colnum, this.state.rownum, AIConfig.SPLIT_MARGIN)
+      this.scalableSS.predict(captureCanvas, this.state.colnum, this.state.rownum)
       captureCanvas.remove()
   }
 
