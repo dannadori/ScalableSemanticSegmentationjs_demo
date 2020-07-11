@@ -21,9 +21,6 @@ if __name__ == '__main__':
     else:
         heroku = False
 
-
-
-
     print(app.url_map)
     print('start')
     files = glob.glob('./*')
