@@ -15,7 +15,15 @@ export const AIConfig = {
     TRANSFORMED_MAX: 300,
     CROP_MARGIN: 20,
 
-    SS_MODEL_PATH: '/WEB_MODEL/300x300_0.10/model.json',
+    SS_MODEL_PATH: '/WEB_MODEL/icnet_0300x0300_0.10/model.json',
+    SS_MODEL_PATHS: [
+        '/WEB_MODEL/icnet_0300x0300_0.10/model.json',
+        '/WEB_MODEL/icnet_0300x0300_0.30/model.json',
+        '/WEB_MODEL/icnet_0300x0300_0.50/model.json',
+        '/WEB_MODEL/icnet_0300x0300_0.70/model.json',
+        '/WEB_MODEL/icnet_0300x0300_0.90/model.json',
+        '/WEB_MODEL/icnet_0300x0300_1.00/model.json',
+    ]
 }
 
 

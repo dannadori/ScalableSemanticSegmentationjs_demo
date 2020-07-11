@@ -46,3 +46,14 @@ export const captureVideoImageToCanvas = (video:HTMLVideoElement):HTMLCanvasElem
     tmpCtx.drawImage(video, 0, 0, videoCaptureCanvas.width, videoCaptureCanvas.height);
     return videoCaptureCanvas
 }
+
+export const captureImageToCanvas = (img:HTMLImageElement):HTMLCanvasElement => {
+    const videoCaptureCanvas    = document.createElement("canvas");
+    videoCaptureCanvas.width  = img.width
+    videoCaptureCanvas.height = img.height
+
+    const tmpCtx                = videoCaptureCanvas.getContext('2d')!
+    tmpCtx.drawImage(img, 0, 0, videoCaptureCanvas.width, videoCaptureCanvas.height);
+    return videoCaptureCanvas
+}
+
